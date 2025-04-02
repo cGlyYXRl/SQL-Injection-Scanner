@@ -21,15 +21,15 @@ An advanced tool to detect SQL injection vulnerabilities in web applications wit
 🚀 Installation
 
     Clone the repository:
-    bash
-    Copy
+    
+    
 
     git clone https://github.com/cGlyYXRl/SQL-Injection-Scanner.git
     cd SQL-Injection-Scanner
 
     Install dependencies:
-    bash
-    Copy
+    
+    
 
     pip install -r requirements.txt
 
