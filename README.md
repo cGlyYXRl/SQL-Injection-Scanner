@@ -51,20 +51,17 @@ Options:
 💡 Examples
 
     Scan single URL:
-    bash
-    Copy
 
     python sql_scanner.py --url "http://example.com?id=1" --verbose
 
     Scan multiple URLs with proxy:
-    bash
-    Copy
+
 
     python sql_scanner.py --urls targets.txt --proxy "http://localhost:8080" --threads 20
 
     Full scan with custom payloads:
-    bash
-    Copy
+  
+    
 
     python sql_scanner.py --urls targets.txt --payloads my_payloads.txt --report scan_results.html
 
